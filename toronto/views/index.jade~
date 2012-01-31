@@ -1,0 +1,31 @@
+!!! 5
+html(lang="en")
+  head
+    title Messaging App
+    script(src='/jquery.min.js')
+    script(src='/underscore-min.js')
+    script(src='/backbone.min.js')
+    script(src='/dnode.backbone.js')
+    script(src='/application.js')
+    script(src='/dnode.js')
+  body
+    #header
+      h1 Messaging App
+    #messageApp
+      .content
+        #create-message
+          input#new-message(placeholder="what's on your mind?", type="text")
+          span.ui-tooltip-top Press Enter to post this message
+      #messages
+        ul#message-list
+
+    #footer
+      p powed by coffee
+
+    script(type='text/template', id="item-template")
+      .message
+        .display
+          .message-content
+        .edit
+          input.message-input(type="text", value="")
+      
