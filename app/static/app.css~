@@ -68,6 +68,7 @@ html {
 #nav {
   float: right;
 }
+
 #messageapp {
   width: 600px;
   margin: 0 auto 40px;
@@ -86,8 +87,8 @@ html {
   position: relative;
 }
   #create-message input {
-    width: 466px;
-    font-size: 24px;
+    width: 580px;
+    font-size: 20px;
     font-family: inherit;
     line-height: 1.4em;
     border: 0;
@@ -116,7 +117,7 @@ html {
   #message-list li {
     padding: 12px 20px 11px 0;
     position: relative;
-    font-size: 24px;
+    font-size: 20px;
     line-height: 1.1em;
     border-bottom: 1px solid #cccccc;
   }
@@ -140,8 +141,8 @@ html {
       display: block;
     }
     #message-list .editing input {
-      width: 444px;
-      font-size: 24px;
+      width: 560px;
+      font-size: 20px;
       font-family: inherit;
       margin: 0;
       line-height: 1.6em;
