@@ -21,7 +21,7 @@ $(function(){
     // Default attributes for the message.
     defaults: {
       content: "empty message..."
-      // done: false
+     // done: false
     },
 
     // Ensure that each message created has `content`.

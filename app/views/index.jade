@@ -18,22 +18,22 @@ html
     #messageapp
       .content
         #create-message
-          input#new-message(placeholder='What on your mind?', type='text')
-          span.ui-tooltip-top(style='display: none;') Press Enter to save this task
+          input#new-message(placeholder='Start Typing!', type='text')
+          span.ui-tooltip-top(style='display: none;') Press Enter to save this Message
       #messages
         ul#message-list
       #message-stats
     ul#instructions
-      li Double-click to edit a message.
+      li Start Typing!
+
+    #credits
+      p Fueled by Tacos
     //
        Templates 
     script#item-template(type='text/template')
-      <div class="message <%= done ? 'done' : '' %>">
       <div class="display">
       <div class="message-content"></div>
       <span class="message-destroy"></span>
       </div>
-      <div class="edit">
-      <input class="message-input" type="text" value="" />
-      </div>
+     
       </div>

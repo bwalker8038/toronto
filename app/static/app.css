@@ -161,10 +161,7 @@ html {
     margin: 0 10px 0 7px;
     float: left;
   }
-  #message-list .done .message-content {
-    text-decoration: line-through;
-    color: #777777;
-  }
+
   #message-list .message-destroy {
     position: absolute;
     right: 5px;
@@ -182,40 +179,6 @@ html {
       background-position: 0 -20px;
     }
 
-#message-stats {
-  *zoom: 1;
-  margin-top: 10px;
-  color: #777777;
-}
-  #message-stats:after {
-    content: "\0020";
-    display: block;
-    height: 0;
-    clear: both;
-    overflow: hidden;
-    visibility: hidden;
-  }
-  #message-stats .message-count {
-    float: left;
-  }
-    #message-stats .message-count .number {
-      font-weight: bold;
-      color: #333333;
-    }
-  #message-stats .message-clear {
-    float: right;
-  }
-    #message-stats .message-clear a {
-      color: #777777;
-      font-size: 12px;
-    }
-      #message-stats .message-clear a:visited {
-        color: #777777;
-      }
-      #message-stats .message-clear a:hover {
-        color: #336699;
-      }
-
 #instructions {
   width: 520px;
   margin: 10px auto;
@@ -228,6 +191,8 @@ html {
   }
 
 #credits {
+  clear: both;
+  bottom: 0;
   width: 520px;
   margin: 30px auto;
   color: #999;
