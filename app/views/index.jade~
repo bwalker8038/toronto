@@ -23,11 +23,9 @@ html
       #messages
         ul#message-list
       #message-stats
-    ul#instructions
-      li Start Typing!
 
     #credits
-      p Powered by Tacos
+      p Powered by Dr Pepper
     //
        Templates 
     script#item-template(type='text/template')

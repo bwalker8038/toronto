@@ -9,7 +9,7 @@ $(function(){
   // Message Model
   // ----------
 
-  // Our basic **Message** model has `content`, `order`, and `done` attributes.
+  // Our basic **Message** model has `content`, `order` attributes.
   window.Message = Backbone.Model.extend({
 
     // Server communication settings

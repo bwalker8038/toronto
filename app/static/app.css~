@@ -38,9 +38,6 @@ a img {
   border: none;
 }
 
-html {
-  background: #eeeeee;
-}
   body {
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     font-size: 14px;
@@ -72,7 +69,7 @@ html {
 #messageapp {
   width: 600px;
   margin: 0 auto 40px;
-  background: white;
+ 
   padding: 20px;
 }
   #messageapp h1 {
@@ -129,38 +126,6 @@ html {
       overflow: hidden;
       visibility: hidden;
     }
-    #message-list li.editing {
-      padding: 0;
-      border-bottom: 0;
-    }
-  #message-list .editing .display,
-  #message-list .edit {
-    display: none;
-  }
-    #message-list .editing .edit {
-      display: block;
-    }
-    #message-list .editing input {
-      width: 560px;
-      font-size: 20px;
-      font-family: inherit;
-      margin: 0;
-      line-height: 1.6em;
-      border: 0;
-      outline: none;
-      padding: 10px 7px 0px 27px;
-      border: 1px solid #999999;
-      -moz-box-shadow: rgba(0, 0, 0, 0.2) 0 1px 2px 0 inset;
-      -webkit-box-shadow: rgba(0, 0, 0, 0.2) 0 1px 2px 0 inset;
-      -o-box-shadow: rgba(0, 0, 0, 0.2) 0 1px 2px 0 inset;
-      box-shadow: rgba(0, 0, 0, 0.2) 0 1px 2px 0 inset;
-    }
-  #message-list .check {
-    position: relative;
-    top: 9px;
-    margin: 0 10px 0 7px;
-    float: left;
-  }
 
   #message-list .message-destroy {
     position: absolute;
@@ -179,18 +144,8 @@ html {
       background-position: 0 -20px;
     }
 
-#instructions {
-  width: 520px;
-  margin: 10px auto;
-  color: #777777;
-  text-shadow: rgba(255, 255, 255, 0.8) 0 1px 0;
-  text-align: center;
-}
-  #instructions a {
-    color: #336699;
-  }
-
 #credits {
+  clear: both;
   bottom: 0;
   width: 520px;
   margin: 30px auto;
