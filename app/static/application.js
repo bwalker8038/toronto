@@ -6,6 +6,9 @@
 // Load the application once the DOM is ready, using `jQuery.ready`:
 $(function(){
 
+  // Load Markdown Converter
+  var converter = new Markdown.Converter().makeHtml;
+
   // Message Model
   // ----------
 
