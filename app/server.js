@@ -21,6 +21,10 @@ var express = require('express'),
    DNode = require('dnode'),
    BackboneDNode = require('backbone-dnode'),
 
+
+// Encryption Module
+   bcrypt = require('bcrypt'),
+
 // Database ODM dependencies
    Mongoose = require('mongoose'),
    Schema   = Mongoose.Schema,
@@ -76,8 +80,13 @@ var messageSchema = new Schema({
 });
 
 var userSchema = new Schema({
-    username: String,
-    password: String,
+
+    setters: {
+        password: encrypt_password(password);
+    },
+
+    username: { type: String, required: true },
+    password: { type: String, required: true },
     bio: String,
     picUrl: String,
     dateCreated: Date
@@ -99,13 +108,18 @@ function requiresLogin(req, res, next) {
     }
 };
 
+function encrypt_password(password) {
+    salt = bcrypt.gensaltSync(10);
+    return bcrypt.hashSync(password, salt);
+};
+
 function authenticate(username, password, callback) {
-    var user = User.findOne({usename: req.body.user.username});
+    var user = User.findOne({username});
 
     if (!user) {
         callback(null);
         return;
-    } if (user.password == password) {
+    } if (bcrypt.compareSync(password, user.password)) {
         callback(user);
         return;
     }
@@ -160,11 +174,14 @@ app.post('/sessions', function(req, res) {
 
 app.get('/user/new', function(req,res) {
     res.render('new.jade', {locals: {
-                user: req.body && req.body.user || user.new
+                user: req.body && req.body.user
     }});
 });
 
-
+app.post('/user', function(req, res) {
+    var user = new User(req.body.user);
+    user.save;
+});
 // Initialize
 // ----------
 
