@@ -15,7 +15,7 @@ var express = require('express'),
 
 // Create the express application
    app = module.exports = express.createServer(
-          form({keepExtensions: True})
+          form({keepExtensions: true})
    ),
 
    DNode = require('dnode'),
@@ -67,36 +67,6 @@ app.set('view options', {
 });
 
 
-// Start up the application and connect to the mongo 
-// database if not part of another module or clustered, 
-// configure the Mongoose model schemas, setting them to 
-// our database instance. The DNode middleware will need 
-// to be configured with the database references.
-database = Mongoose.connect('mongodb://localhost:27017/toronto')
-
-var messageSchema = new Schema({
-    content: String,
-    order: Number
-});
-
-var userSchema = new Schema({
-
-    setters: {
-        password: encrypt_password(password);
-    },
-
-    username: { type: String, required: true },
-    password: { type: String, required: true },
-    bio: String,
-    picUrl: String,
-    dateCreated: Date
-});
-
-database.model('message', messageSchema);
-database.model('user', userSchema);
-
-var User = databse.model('user');
-
 
 // Auth Handlers
 // -------------
@@ -108,23 +78,6 @@ function requiresLogin(req, res, next) {
     }
 };
 
-function encrypt_password(password) {
-    salt = bcrypt.gensaltSync(10);
-    return bcrypt.hashSync(password, salt);
-};
-
-function authenticate(username, password, callback) {
-    var user = User.findOne({username});
-
-    if (!user) {
-        callback(null);
-        return;
-    } if (bcrypt.compareSync(password, user.password)) {
-        callback(user);
-        return;
-    }
-    callback(null);
-};
 
 // Helpers
 // -------
@@ -138,16 +91,76 @@ app.dynamicHelpers({
 });
 
 
+// Start up the application and connect to the mongo 
+// database if not part of another module or clustered, 
+// configure the Mongoose model schemas, setting them to 
+// our database instance. The DNode middleware will need 
+// to be configured with the database references.
+database = Mongoose.connect('mongodb://localhost:27017/toronto')
+
+var messageSchema = new Schema({
+    content: String,
+    order: Number
+});
+
+
+database.model('message', messageSchema);
+database.model('User', {
+    properties: ['username', 'hashed_password', 'salt'],
+
+    indexes: [
+        [{username: 1}, {unique: true }]
+    ],
+
+    getters: {
+        id: function() {
+            return this._id.toHexString();
+        },
+
+        password: function() { return this._password; }
+
+    },
+
+    
+    setters: {
+        password: function(password) {
+            this._password = password;
+            this.salt = bcrypt.genSaltSync(10);
+            this.hashed_password = this.encryptPassword(password);
+        }
+    },
+
+    methods: {
+        encryptPassword: function(password) {
+            return bcrypt.hashSync(password, this.salt);
+        },
+        
+        authenticate: function(password) {
+            return bcrypt.compareSync(password, this.hashed_password);
+        },
+
+        save: function(okFn, failedFn) {
+            if(this.isValid()) {
+                this.__super__(okFn);
+            } else {
+                failedFn();
+            }
+        }
+    }
+});
+
+
 // Routes
 // ------
 
 // Main application
 app.get('/', requiresLogin, function(req, res) {
-    res.render('index.jade');
+    res.render('index');
 });
 
 app.get('/sessions/new', function(req, res) {
     res.render('sessions/new', {locals: { 
+                user: new User(),
                 redir: req.query.redir 
     }}); 
 });
@@ -159,29 +172,48 @@ app.get('sessions/destroy', function(req, res) {
 });
 
 app.post('/sessions', function(req, res) {
-    users.authenticate(req.body,login, req.body.password, function(user){
-        if(user) {
-            req.session.user = user;
+    User.find({ username: req.body.username }).first(function(user) {
+        if(user && user.authenticate(req.body.password)) {
+            req.session.user = user.username;
             res.redirect(req.body.rdir || '/');
         } else {
-            req.flash('warn', "Login failed.  Please check your username/password.");
-            res.render('sessions/new', {locals: {
-                        redir: req.query.redir 
-            }});
+            req.flash('warn', "Login failed.  Please check your username and/or password.");
+            res.redirect('/sessions/new');
         }
-    }); 
+    });
 });
 
-app.get('/user/new', function(req,res) {
-    res.render('new.jade', {locals: {
-                user: req.body && req.body.user
+app.get('/users/new', function(req,res) {
+    res.render('users/new.jade', {locals: {
+                user: new User()
     }});
 });
 
-app.post('/user', function(req, res) {
+app.post('/users', function(req, res) {
     var user = new User(req.body.user);
-    user.save;
+
+    function userSaved() {
+        switch (req.params.format) {
+        case 'json':
+            res.send(user.__doc);
+        break;
+
+        default:
+            req.session.user = user.name
+            res.redirect('/');
+        }
+    }
+
+    function userSaveFailed() {
+        req.flash('warn', "User creation failed.  Please see your administrator");
+        res.render('users/new', {
+                locals: {user: user}
+        });
+    }
+
+   user.save(userSaved, userSaveFailed);
 });
+
 // Initialize
 // ----------
 
