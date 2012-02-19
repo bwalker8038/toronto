@@ -71,7 +71,7 @@ app.set('view options', {
 // Auth Handlers
 // -------------
 function requiresLogin(req, res, next) {
-    if(req.session.user) {
+    if(req.session.currentUser) {
      next();
     } else {
       res.redirect('/sessions/new?rdir=' + req.url);
@@ -154,6 +154,7 @@ app.get('/', requiresLogin, function(req, res) {
 app.get('/sessions/new', function(req, res) {
     res.render('sessions/new', {locals: { 
                 user: new User(),
+                title: 'Sign In', 
                 redir: req.query.redir 
     }}); 
 });
@@ -167,9 +168,10 @@ app.get('sessions/destroy', function(req, res) {
 app.post('/sessions', function(req, res) {
     User.findOne({ username: req.body.username }, function(user) {
         if(user && user.authenticate(req.body.password)) {
-            req.session.user_id = user.user_id;
+            // req.session.user_id = user.user_id;
             req.session.currentUser = user;
-            res.redirect(req.body.rdir || '/');
+            res.redirect(req.body.redir || '/');
+            res.flash('info', 'Hello %s', user.username)
         } else {
             req.flash('warn', "Login failed.  Please check your username and/or password.");
             res.redirect('/sessions/new');
@@ -178,8 +180,8 @@ app.post('/sessions', function(req, res) {
 });
 
 app.get('/users/new', function(req,res) {
-    res.render('users/new.jade', {locals: {
-                user: new User()
+    res.render('users/new', {locals: {
+                user: new User(), title: 'Register'
     }});
 });
 
@@ -189,11 +191,12 @@ app.post('/users', function(req, res) {
     function userSaved() {
         switch (req.params.format) {
         case 'json':
-            res.send(user.__doc);
+            res.send(user.doc);
+            res.redirect('/');
         break;
 
         default:
-            req.session.user = user.name
+            req.session.user = user;
             res.redirect('/');
         }
     }
@@ -205,7 +208,13 @@ app.post('/users', function(req, res) {
         });
     }
 
-   user.save(userSaved, userSaveFailed);
+   user.save(function(err) {
+       if (err) {
+           userSaveFailed()
+       } else {
+           userSave()
+       }
+   });
 });
 
 // Initialize
