@@ -98,57 +98,50 @@ app.dynamicHelpers({
 // to be configured with the database references.
 database = Mongoose.connect('mongodb://localhost:27017/toronto')
 
+function validatePresenceOf (value) {
+    return value  && value.length;
+}
+
 var messageSchema = new Schema({
     content: String,
     order: Number
 });
 
+var userSchema = new Schema({
+    username: { type: String, index: {unique: true}, validate: [validatePresenceOf, "username is required"]}, 
+    hashed_password: String,
+    salt: String
+});
 
-database.model('message', messageSchema);
-database.model('User', {
-    properties: ['username', 'hashed_password', 'salt'],
-
-    indexes: [
-        [{username: 1}, {unique: true }]
-    ],
-
-    getters: {
-        id: function() {
-            return this._id.toHexString();
-        },
-
-        password: function() { return this._password; }
-
-    },
-
-    
-    setters: {
-        password: function(password) {
-            this._password = password;
-            this.salt = bcrypt.genSaltSync(10);
-            this.hashed_password = this.encryptPassword(password);
-        }
-    },
-
-    methods: {
-        encryptPassword: function(password) {
-            return bcrypt.hashSync(password, this.salt);
-        },
-        
-        authenticate: function(password) {
-            return bcrypt.compareSync(password, this.hashed_password);
-        },
-
-        save: function(okFn, failedFn) {
-            if(this.isValid()) {
-                this.__super__(okFn);
-            } else {
-                failedFn();
-            }
-        }
+userSchema.pre('save', function(next) {
+    if(!validatePresenceOf(this.password)) {
+        next(new Error('Invalid password'));
+    } else {
+        next();
     }
 });
 
+userSchema.virtual('password').set(function(password) {
+    this.salt = bcrypt.genSaltSync(10);
+    this._password = password;
+    this.hashed_password = this.encryptPassword(password);
+}).get(function() {
+    return this._password;
+});
+
+userSchema.method('encryptPassword', function(password) {
+    return bcrypt.hashSync(password,this.salt);
+});
+
+userSchema.method('authenticate', function(plaintext) {
+    return bcrypt.compareSync(plaintext, this.hashed_password);
+});
+
+
+database.model('message', messageSchema);
+database.model('User', userSchema); 
+
+var User = database.model('User');
 
 // Routes
 // ------
@@ -172,9 +165,10 @@ app.get('sessions/destroy', function(req, res) {
 });
 
 app.post('/sessions', function(req, res) {
-    User.find({ username: req.body.username }).first(function(user) {
+    User.findOne({ username: req.body.username }, function(user) {
         if(user && user.authenticate(req.body.password)) {
-            req.session.user = user.username;
+            req.session.user_id = user.user_id;
+            req.session.currentUser = user;
             res.redirect(req.body.rdir || '/');
         } else {
             req.flash('warn', "Login failed.  Please check your username and/or password.");
