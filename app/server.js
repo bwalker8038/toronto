@@ -4,7 +4,11 @@
 
 // Project dependencies
 // --------------------
-var express = require('express'),
+var sys = require('sys'),
+    url = require('url'),
+
+// Application DSL/templating engine
+    express = require('express'),
     jade    = require('jade'),
 
 // Session storage
@@ -74,7 +78,7 @@ function requiresLogin(req, res, next) {
     if(req.session.currentUser) {
      next();
     } else {
-      res.redirect('/sessions/new?rdir=' + req.url);
+        res.redirect('/sessions/new?rdir=' + encodeURIComponent(req.url));
     }
 };
 
@@ -167,13 +171,17 @@ app.get('sessions/destroy', function(req, res) {
 
 app.post('/sessions', function(req, res) {
     User.findOne({ username: req.body.username }, function(user) {
+        var rurl = '/', query = url.parse(req.url, true).query;
+
         if(user && user.authenticate(req.body.password)) {
-            // req.session.user_id = user.user_id;
             req.session.currentUser = user;
-            res.redirect(req.body.redir || '/');
-            res.flash('info', 'Hello %s', user.username)
+            if(query.redirect) {
+                rurl = decodeURIComponent(query.redirect)
+            }
+            console.log('Hello %s', user.username)
+            res.redirect(rurl);
         } else {
-            req.flash('warn', "Login failed.  Please check your username and/or password.");
+            console.log("Login failed.  Please check your username and/or password.");
             res.redirect('/sessions/new');
         }
     });
@@ -185,25 +193,24 @@ app.get('/users/new', function(req,res) {
     }});
 });
 
-app.post('/users', function(req, res) {
+app.post('/users.:format?', function(req, res) {
     var user = new User(req.body.user);
 
     function userSaved() {
         switch (req.params.format) {
         case 'json':
             res.send(user.doc);
-            res.redirect('/');
         break;
 
         default:
-            req.session.user = user;
+            req.session.currentUser = user;
             res.redirect('/');
         }
     }
 
     function userSaveFailed() {
-        req.flash('warn', "User creation failed.  Please see your administrator");
-        res.render('users/new', {
+        console.log("User creation failed.  Please see your administrator");
+        res.render('./users/new', {
                 locals: {user: user}
         });
     }
@@ -212,7 +219,7 @@ app.post('/users', function(req, res) {
        if (err) {
            userSaveFailed()
        } else {
-           userSave()
+           userSaved()
        }
    });
 });
