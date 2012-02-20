@@ -4,8 +4,7 @@
 
 // Project dependencies
 // --------------------
-var sys = require('sys'),
-    url = require('url'),
+var url = require('url'),
 
 // Application DSL/templating engine
     express = require('express'),
@@ -119,7 +118,7 @@ var userSchema = new Schema({
 
 userSchema.pre('save', function(next) {
     if(!validatePresenceOf(this.password)) {
-        next(new Error('Invalid password'));
+        next(new Error('Password is missing'));
     } else {
         next();
     }
@@ -194,7 +193,7 @@ app.get('/users/new', function(req,res) {
 });
 
 app.post('/users.:format?', function(req, res) {
-    var user = new User(req.body.user);
+    var user = new User(req.body);
 
     function userSaved() {
         switch (req.params.format) {
@@ -215,7 +214,7 @@ app.post('/users.:format?', function(req, res) {
         });
     }
 
-   user.save(function(err) {
+    user.save(function(err) {
        if (err) {
            userSaveFailed()
        } else {
