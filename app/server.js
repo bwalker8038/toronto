@@ -94,28 +94,35 @@ app.dynamicHelpers({
 });
 
 
-// Start up the application and connect to the mongo 
-// database if not part of another module or clustered, 
-// configure the Mongoose model schemas, setting them to 
-// our database instance. The DNode middleware will need 
-// to be configured with the database references.
+// Database Config, Applciation Models
+// -----------------------------------
+
+/* database if not part of another module or clustered, 
+ * configure the Mongoose model schemas, setting them to 
+ * our database instance. The DNode middleware will need 
+ * to be configured with the database references. */
+
 database = Mongoose.connect('mongodb://localhost:27017/toronto')
 
+// function will validate the presence of an object.
 function validatePresenceOf (value) {
     return value  && value.length;
 }
 
+// Message Schema
 var messageSchema = new Schema({
     content: String,
     order: Number
 });
 
+// User Schema
 var userSchema = new Schema({
     username: { type: String, index: {unique: true}, validate: [validatePresenceOf, "username is required"]}, 
     hashed_password: String,
     salt: String
 });
 
+// Before save method
 userSchema.pre('save', function(next) {
     if(!validatePresenceOf(this.password)) {
         next(new Error('Password is missing'));
@@ -132,6 +139,7 @@ userSchema.virtual('password').set(function(password) {
     return this._password;
 });
 
+// User Model Methods
 userSchema.method('encryptPassword', function(password) {
     return bcrypt.hashSync(password,this.salt);
 });
@@ -140,10 +148,11 @@ userSchema.method('authenticate', function(plaintext) {
     return bcrypt.compareSync(plaintext, this.hashed_password);
 });
 
-
+// Create the models with MongoDB
 database.model('message', messageSchema);
 database.model('User', userSchema); 
 
+// User model initiation
 var User = database.model('User');
 
 // Routes
