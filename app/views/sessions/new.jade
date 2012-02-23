@@ -1,11 +1,16 @@
-h1 Sign In
-form(action='/sessions', method='post')
-  input(type='hidden', name='redir', value=redir)
-  p
-    label(for='username') Login:
-    input(type='text', name='username', id='username', value=user.username)
-  p 
-    label(for='password') Password:
-    input(type='password', name='password', id='password', value=user.password)
-  input(type='submit', value="Sign In")
+!!! 5
+html(lang="en")
+  head
+    title Sign In
+  body
+    h1 Sign In
+    form(action='/sessions', method='post')
+      input(type='hidden', name='redir', value=redir)
+      p
+        label(for='username') Login:
+        input(type='text', name='username', id='username', value=user.username)
+      p 
+        label(for='password') Password:
+        input(type='password', name='password', id='password', value=user.password)
+        input(type='submit', value="Sign In")
 

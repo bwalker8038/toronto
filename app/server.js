@@ -169,18 +169,18 @@ app.get('sessions/destroy', function(req, res) {
 });
 
 app.post('/sessions', function(req, res) {
-    User.findOne({ username: req.body.username }, function(user) {
+    User.findOne({ username: req.body.username }, function(err, user) {
         var rurl = '/', query = url.parse(req.url, true).query;
 
         if(user && user.authenticate(req.body.password)) {
             req.session.currentUser = user;
             if(query.redirect) {
-                rurl = decodeURIComponent(query.redirect)
+                rurl = decodeURIComponent(query.redirect);
             }
-            console.log('Hello %s', user.username)
+            req.flash('info', 'Hello %s', user.username);
             res.redirect(rurl);
         } else {
-            console.log("Login failed.  Please check your username and/or password.");
+            req.flash('warn', "Login failed.  Please check your username and/or password.");
             res.redirect('/sessions/new');
         }
     });
