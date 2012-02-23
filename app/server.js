@@ -162,6 +162,7 @@ app.get('/sessions/new', function(req, res) {
     }}); 
 });
 
+// Sessions
 app.get('sessions/destroy', function(req, res) {
     delete req.session.user;
     req.flash("You have successfully logged out.");
@@ -186,6 +187,7 @@ app.post('/sessions', function(req, res) {
     });
 });
 
+// User Creation
 app.get('/users/new', function(req,res) {
     res.render('users/new', {locals: {
                 user: new User(), title: 'Register'
@@ -208,7 +210,7 @@ app.post('/users.:format?', function(req, res) {
     }
 
     function userSaveFailed() {
-        console.log("User creation failed.  Please see your administrator");
+        req.flash('warn', "User creation failed.  Please see your administrator");
         res.render('./users/new', {
                 locals: {user: user}
         });
