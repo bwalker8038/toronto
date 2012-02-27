@@ -5,11 +5,13 @@
    to persist Backbone models within your browser. */
 
 // Load the application once the DOM is ready, using `jQuery.ready`:
-$(function(){
 
+
+
+$(function(){
   // Load Markdown Converter
   var converter = new Markdown.Converter().makeHtml;
-
+  
   // Message Model
   // ----------
 
@@ -114,8 +116,12 @@ $(function(){
     // To avoid XSS (not that it would be harmful in this particular app),
     // we use `jQuery.text` to set the contents of the message item.
     setContent: function() {
-      var content = this.model.get('content');
+      var content = this.model.get('content'),
+          author  = this.model.get('author');
+
       this.$('.message-content').text(content);
+      this.$('.message-author').text(author);
+
       this.input = this.$('.message-input');
       this.input.bind('blur', this.close);
       this.input.val(content);
@@ -202,7 +208,8 @@ $(function(){
     newAttributes: function() {
       return {
         content: this.input.val(),
-        order:   Messages.nextOrder(),
+        author: user.username,
+        order:   Messages.nextOrder()
       };
     },
 

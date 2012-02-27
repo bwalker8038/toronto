@@ -112,6 +112,7 @@ function validatePresenceOf (value) {
 // Message Schema
 var messageSchema = new Schema({
     content: String,
+    author: String,
     order: Number
 });
 
@@ -160,7 +161,7 @@ var User = database.model('User');
 
 // Main application
 app.get('/', requiresLogin, function(req, res) {
-    res.render('index');
+    res.render('index', {currentUser: req.session.currentUser});
 });
 
 app.get('/sessions/new', function(req, res) {
