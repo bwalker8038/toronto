@@ -13,13 +13,8 @@ var url = require('url'),
 // Session storage
     MemStore = express.session.MemoryStore,
 
-// Form handling
-   form = require('connect-form'),
-
 // Create the express application
-   app = module.exports = express.createServer(
-          form({keepExtensions: true})
-   ),
+   app = module.exports = express.createServer(),
 
    DNode = require('dnode'),
    BackboneDNode = require('backbone-dnode'),
@@ -108,19 +103,29 @@ database = Mongoose.connect('mongodb://localhost:27017/toronto')
 function validatePresenceOf (value) {
     return value  && value.length;
 }
+// thread Schema
+var threadSchema = new Schema({
+    title: String,
+    discription: String,
+    creator: String,
+    messages: [messageSchema],
+    date_created: Date
+});
 
 // Message Schema
 var messageSchema = new Schema({
     content: String,
     author: String,
-    order: Number
+    order: Number,
+    date_created: Date
 });
 
 // User Schema
 var userSchema = new Schema({
-    username: { type: String, index: {unique: true}, validate: [validatePresenceOf, "username is required"]}, 
+    username: { type: String, index: {unique: true}, validate: [validatePresenceOf, "username is required"]},
     hashed_password: String,
-    salt: String
+    salt: String,
+    date_created: Date
 });
 
 // Before save method
@@ -152,9 +157,14 @@ userSchema.method('authenticate', function(plaintext) {
 // Create the models with MongoDB
 database.model('message', messageSchema);
 database.model('User', userSchema); 
+database.model('Thread', threadSchema);
 
 // User model initiation
 var User = database.model('User');
+
+// Thead model initialion
+var Thread = database.model('Thread');
+
 
 // Routes
 // ------
@@ -162,6 +172,40 @@ var User = database.model('User');
 // Main application
 app.get('/', requiresLogin, function(req, res) {
     res.render('index', {currentUser: req.session.currentUser});
+});
+
+// Threads
+app.get('/thread/:id', requiresLogin, function(req, res){
+    res.render('thread', {currentUser: req.session.currentUser});
+});
+
+app.get('/thread/new', requiresLogin, function(req, res){
+    res.reander('threads/new', {locals: {
+                 thread: new Thread(),
+                 title: 'Create a new Conversation'
+    }});
+    
+});
+app.post('/threads.:format?', function(req, res){
+    var thread = new Thread(req.body);
+    
+    function threadSaved() {
+        switch (req.params.format) {
+            case 'json':
+                res.send(thread.doc);
+            break;
+            
+            default:
+                res.redirect('/threads/:id');
+            }
+    }
+    
+    function threadsaveFailed() {
+        req.flash('warn', "thread creation failed.  Please contact support.");
+        res.render('./threads/new');
+    }
+        
+        
 });
 
 app.get('/sessions/new', function(req, res) {
@@ -200,7 +244,8 @@ app.post('/sessions', function(req, res) {
 // User Creation
 app.get('/users/new', function(req,res) {
     res.render('users/new', {locals: {
-                user: new User(), title: 'Register'
+                user: new User(), 
+                title: 'Register'
     }});
 });
 

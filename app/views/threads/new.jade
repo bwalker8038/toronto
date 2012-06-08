@@ -1,0 +1,7 @@
+h1 Create new Thread
+form(action='/threads', method='POST')
+  label(for='title') Title:
+  input(type='text', id='title', name='title', value=thread.title)
+  label(for='discription') Discription:
+  input(type='discription', id='discription', name='discription', value=thread.discription) 
+  input(type='submit', value='Create Trhead')
