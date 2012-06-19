@@ -175,11 +175,11 @@ app.get('/', requiresLogin, function(req, res) {
 });
 
 // Threads
-app.get('/thread/:id', requiresLogin, function(req, res){
+app.get('/threads/:id', requiresLogin, function(req, res){
     res.render('thread', {currentUser: req.session.currentUser});
 });
 
-app.get('/thread/new', requiresLogin, function(req, res){
+app.get('/threads/new', requiresLogin, function(req, res){
     res.reander('threads/new', {locals: {
                  thread: new Thread(),
                  title: 'Create a new Conversation'

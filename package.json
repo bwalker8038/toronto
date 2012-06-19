@@ -7,6 +7,7 @@
     },
     "dependencies": {
         "express": "2.5.x",
+        "express-messages": "x",
         "jade": "0.26.x",
         "mongoose": "2.7.x",
         "bcrypt": "0.5.x",
@@ -14,6 +15,7 @@
         "redis": "0.7.x",
         "stylus": "0.27.x",
         "express-uglify": "0.2.x",
-        "gzippo": "0.1.x"
+        "gzippo": "0.1.x",
+        "js-yaml": "x"
     }
 }

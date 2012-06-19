@@ -4,7 +4,7 @@
 module.exports = function(app) {
     
     app.dynamicHelpers({
-        request function(req){
+        request: function(req){
             return req;
         },
         

@@ -23,8 +23,8 @@ var fs = require('fs'),
 
 // Load Application Configuration
 // ------------------------------
-var config_file = require('yaml-config');
-    exports = module.exports = config = config_file.readConfig('config/config.yaml');
+var yaml = require('js-yaml');
+    exports = module.exports = config = require('./config/config.yaml');
 
 
 // Load Dynamic Helpers
@@ -32,14 +32,14 @@ var config_file = require('yaml-config');
 var helper_path = __dirname + '/app/helpers',
     helper_file = fs.readdirSync(helper_path);
 
-helper_file.forEach(function() {
+helper_file.forEach(function(file) {
     require(helper_path+'/'+file)(app);
 });
 
 
 // Load Database Config
 // --------------------
-require('/config/db.js');
+require('./config/db.js');
 
 
 // Load Models
@@ -47,7 +47,7 @@ require('/config/db.js');
 var models_path = __dirname + '/app/models',
     model_files = fs.readdirSync(models_path);
     
-model_files.forEach(function() {
+model_files.forEach(function(file) {
     if(file == 'user.js') {
         User = require(models_path+'/'+file);
     } else {
@@ -66,7 +66,7 @@ require('/config/config').boot(app);
 var controllers_path = __dirname + '/app/controllers',
     controller_files = fs.readdirSync(controllers_path);
     
-controller_files.forEach(function() {
+controller_files.forEach(function(file) {
     require(controllers_path+'/'+file)(app);
 });
 

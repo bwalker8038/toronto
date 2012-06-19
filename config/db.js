@@ -17,7 +17,7 @@ var exports = validatePresenceOf;
 
 // ODM Exports
 var exports = Mongoose = require('mongoose');
-    mongoose.connect(config.db.uri);
+    Mongoose.connect(config.db.uri);
     
 var exports = Mongoose.Schema;
 

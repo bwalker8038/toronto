@@ -1,7 +1,7 @@
 !!! 5
 html
   head
-    title Toronto Messager
+    title Toronto
     link(href='app.css', media='all', rel='stylesheet', type='text/css')
     script(src='/jquery.min.js')
     script(src='/underscore-min.js')
@@ -10,6 +10,8 @@ html
     script(src='/dnode.backbone.js')
     script(src='/application.js')
     script(src='/markdown.converter.js')
+    script(type='text/javascript')
+      var user = { user_id: '#{currentUser._id}', username: '#{currentUser.username}' }
   body
     #header
       ul#nav
@@ -42,7 +44,3 @@ html
       </div>
      
       </div>
-    script#userData(type='text/javascript')
-      var user = { user_id: '#{currentUser._id}', username: '#{currentUser.username}' }
-
-
