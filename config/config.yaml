@@ -7,5 +7,3 @@ staging:
 production:
   db:
     uri: ""
-    user: "bwalker"
-    password: "password"

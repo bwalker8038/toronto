@@ -23,8 +23,9 @@ var fs = require('fs'),
 
 // Load Application Configuration
 // ------------------------------
-var yaml = require('js-yaml');
-    exports = module.exports = config = require('./config/config.yaml');
+var env  = process.env.NODE_ENV || 'development';
+var yaml = require('yaml-config');
+    exports = module.exports = config = yaml.readConfig('./config/config.yaml', env);
 
 
 // Load Dynamic Helpers
@@ -76,6 +77,7 @@ controller_files.forEach(function(file) {
 
 // Start up the server
 var port = process.env.PORT || 8000;
+    
 app.listen(port, function() {
     console.log("Server configured for: " + (global.process.env.NODE_ENV) + " environment.");
     console.log("Server listening on port: " + port);
