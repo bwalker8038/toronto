@@ -17,8 +17,11 @@ var exports = validatePresenceOf;
 
 // ODM Exports
 var exports = Mongoose = require('mongoose');
-    mongoose.connect(config.db.uri)
+    mongoose.connect(config.db.uri);
     
 var exports = Mongoose.Schema;
 
-
+// Redis instances for pub/sub
+var exports = Redis = require('redis');
+var exports = pub = Redis.createClient();
+var exports = sub = Redis.createClient();

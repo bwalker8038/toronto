@@ -1,0 +1,15 @@
+h1.logo
+  a(href="/", title="Toronto Messaging Server") Toronto Messaging Server
+nav
+  ul
+    if(session)
+      li
+        a(href="/threads/new") New Thread
+      li
+        a(href="/user/profile") Settings
+      li
+        a(href="/sessions/destroy") Sign Out
+    else
+      li
+        a(href="/sessions/new") Sign In
+      

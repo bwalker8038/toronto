@@ -1,0 +1,11 @@
+development:
+  db:
+    uri: "mongodb://localhost/toronto_dev"
+staging:
+  db:
+    uri: "mongodb://localhost/toronto_stag"
+production:
+  db:
+    uri: ""
+    user: "bwalker"
+    password: "password"

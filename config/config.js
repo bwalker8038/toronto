@@ -8,7 +8,7 @@
 var express = require('express'),
     mongoStore = require('connect-mongodb'),
     
-// Static Assests Minifiers/Compressors
+// Static Assest Minifiers/Compressors
     expressUglify = require('express-uglyify'),
     gzippo = require('gzippo');
 
@@ -49,23 +49,6 @@ function bootApplication(app) {
         app.use(express.favicon());
     });
         
-    // Dynamic Helper Settings
-    app.dynamicHelpers({
-        request function(req){
-            return req;
-        },
-        
-        hasMessages: function(req) {
-            if(!req.session) return false;
-            return Object.keys(req.session.flash || {}).length;
-        },
-        
-        messages: require('express-messages'),
-        
-        base: function() {
-            return '/' == app.route ? '' : app.route
-        }
-    }); 
         
     // Stack errors set to false as default
     app.set('showStackError', false);

@@ -5,9 +5,11 @@
 // Project dependencies
 // --------------------
 
-// Node.js File/Utilities
-var utils = require('utils'),
-    fs = require('fs'),
+// File/Path Handling
+var fs = require('fs'),
+    
+// Url Handling
+    url = require('url'),
     
 // Application DSL
     express = require('express'),
@@ -16,22 +18,32 @@ var utils = require('utils'),
    app = module.exports = express.createServer(),
 
    DNode = require('dnode'),
-   BackboneDNode = require('backbone-dnode'),
+   BackboneDNode = require('backbone-dnode');
 
-   Redis = require('redis'),
-
-// Redis instances for pub/sub
-   pub = Redis.createClient(),
-   sub = Redis.createClient(),
 
 // Load Application Configuration
-    config_file = require('yaml-config');
+// ------------------------------
+var config_file = require('yaml-config');
     exports = module.exports = config = config_file.readConfig('config/config.yaml');
 
+
+// Load Dynamic Helpers
+// --------------------
+var helper_path = __dirname + '/app/helpers',
+    helper_file = fs.readdirSync(helper_path);
+
+helper_file.forEach(function() {
+    require(helper_path+'/'+file)(app);
+});
+
+
 // Load Database Config
+// --------------------
 require('/config/db.js');
 
+
 // Load Models
+//------------
 var models_path = __dirname + '/app/models',
     model_files = fs.readdirSync(models_path);
     
@@ -43,22 +55,20 @@ model_files.forEach(function() {
     }
 });
 
+
 // Bootstrap the application
+// -------------------------
 require('/config/config').boot(app);
 
-// Auth Handler
-// -------------
-function requiresLogin(req, res, next) {
-    if(req.session.currentUser) {
-     next();
-    } else {
-        res.redirect('/sessions/new?rdir=' + encodeURIComponent(req.url));
-    }
-}
 
-// Load Routes
-// -----------
-require('/app/routes.js');
+// Load Controllers
+// ----------------
+var controllers_path = __dirname + '/app/controllers',
+    controller_files = fs.readdirSync(controllers_path);
+    
+controller_files.forEach(function() {
+    require(controllers_path+'/'+file)(app);
+});
 
 
 // Initialize
@@ -70,6 +80,7 @@ app.listen(port, function() {
     console.log("Server configured for: " + (global.process.env.NODE_ENV) + " environment.");
     console.log("Server listening on port: " + port);
 });
+
 
 // General error handling
 function errorHandler(client, conn) {
