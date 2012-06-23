@@ -1,0 +1,23 @@
+//
+  Message App Interface 
+#messageapp
+  .content
+    #create-message
+      input#new-message(placeholder='Start a conversation', type='text')
+      span.ui-tooltip-top(style='display: none;') Press Enter to save this Message
+    #messages
+      ul#message-list
+    #message-stats
+
+//
+  Templates 
+script#item-template(type='text/template')
+  <div class="display">
+    <div class="message-content"></div>
+    <div class="message-author"></div>
+      <span class="message-destroy"></span>
+    </div>
+  </div>
+
+
+

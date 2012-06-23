@@ -23,5 +23,5 @@ var exports = Mongoose.Schema;
 
 // Redis instances for pub/sub
 var exports = Redis = require('redis');
-var exports = pub = Redis.createClient();
-var exports = sub = Redis.createClient();
+var exports = pub = Redis.createClient(config.redis.uri);
+var exports = sub = Redis.createClient(config.redis.uri);

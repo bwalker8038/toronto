@@ -1,9 +1,15 @@
 development:
   db:
     uri: "mongodb://localhost/toronto_dev"
+  redis:
+    uri: ""
 staging:
   db:
     uri: "mongodb://localhost/toronto_stag"
+  redis:
+    uri: ""
 production:
   db:
     uri: ""
+  redis:
+    uri: REDISTOGO_URL

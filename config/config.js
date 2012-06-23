@@ -62,7 +62,7 @@ function bootApplication(app) {
     
     app.configure('staging', function() {
         app.use(expressUglify.middleware({
-            src: __dirname + '/public/js',
+            src: __dirname + '/public/js'
         }));
         app.use(gzippo.staticGzip(__dirname + '/public'));
     });

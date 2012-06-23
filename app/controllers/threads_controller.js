@@ -6,7 +6,7 @@ var Thread = mongoose.model('Thread'),
     
 module.exports = function(app) {
     app.get('/thread/:id', requiresLogin, function(req, res){
-        res.render('thread', {currentUser: req.session.currentUser});
+        res.render('threads/show', {currentUser: req.session.currentUser});
     });
 
     app.get('/thread/new', requiresLogin, function(req, res){
