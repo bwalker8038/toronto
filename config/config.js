@@ -19,7 +19,7 @@ var express = require('express'),
 // export app configuration
 exports.boot = function(app) {
     bootApplication(app);
-}
+};
 
 // Function will bootstrap the application configuration
 function bootApplication(app) {

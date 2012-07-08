@@ -87,7 +87,7 @@ app.listen(port, function() {
 // General error handling
 function errorHandler(client, conn) {
     conn.on('error', function(e) {
-      console.log('Conn Error: ', e.stack)
+      console.log('Conn Error: ', e.stack);
     });
 }
 

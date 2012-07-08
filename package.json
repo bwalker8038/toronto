@@ -5,6 +5,9 @@
         "node": "0.6.x",
         "npm": "1.0.x"
     },
+    "scripts": {
+        "test": "vows --spec"
+    },
     "dependencies": {
         "express": "2.5.x",
         "express-messages": "x",
@@ -18,6 +21,7 @@
         "gzippo": "0.1.x",
         "yaml-config": "0.1.x",
         "dnode": "0.9.x",
-        "backbone-dnode": "0.4.x"
+        "backbone-dnode": "0.4.x",
+        "vows": "*"
     }
 }

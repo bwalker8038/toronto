@@ -5,8 +5,21 @@ var Thread = mongoose.model('Thread'),
     Message = mongoose.model('Message');
     
 module.exports = function(app) {
-    app.get('/thread/:id', requiresLogin, function(req, res){
-        res.render('threads/show', {currentUser: req.session.currentUser});
+    app.get('/thread/:id.:format?', requiresLogin, function(req, res){
+        
+        Thread.findOne({__id: req.params.id, user_id: req.currentUser.id}, function(err, thread) {
+            if(!thread) return next(new NotFound('Thread not Found')); 
+            
+            switch (req.params.format) {
+                case 'json':
+                    res.send(thread.toObject());
+                break;
+                
+            default:
+                res.render('threads/show', {currentUser: req.session.currentUser});
+             }
+        });
+        
     });
 
     app.get('/thread/new', requiresLogin, function(req, res){
@@ -22,7 +35,7 @@ module.exports = function(app) {
         function threadSaved() {
             switch (req.params.format) {
                 case 'json':
-                    res.send(thread.doc);
+                    res.send(thread.toObject());
                 break;
             
                 default:

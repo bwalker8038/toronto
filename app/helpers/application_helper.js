@@ -16,7 +16,7 @@ module.exports = function(app) {
         messages: require('express-messages'),
         
         base: function() {
-            return '/' == app.route ? '' : app.route
+            return '/' == app.route ? '' : app.route;
         }
     }); 
-}
+};

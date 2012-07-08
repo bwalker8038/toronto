@@ -4,6 +4,8 @@ form(action='/users', method='POST')
   input(type='text', id='username', name='username', value=user.username)
   label(for='password') Password:
   input(type='password', id='password', name='password', value=user.password) 
+  label(for='password_confim') Confirm Password:
+  input(type='password_confirm', id='password_confirm', value=password_confirm)
   input(type='submit', value='Register')
   span \ or
     a(href='/sessions/new') Sign In
