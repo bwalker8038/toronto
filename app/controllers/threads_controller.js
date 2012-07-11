@@ -23,7 +23,7 @@ module.exports = function(app) {
     });
 
     app.get('/thread/new', requiresLogin, function(req, res){
-        res.reander('threads/new', {locals: {
+        res.render('threads/new', {locals: {
                      thread: new Thread(),
                      title: 'Create a new Conversation'
         }});

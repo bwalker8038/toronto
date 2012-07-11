@@ -1,6 +1,6 @@
 
-// Toronto Messaging Server
-// ========================
+/* Toronto Messaging Server */
+/* ======================== */
 
 // Project dependencies
 // --------------------
@@ -15,10 +15,7 @@ var fs = require('fs'),
     express = require('express'),
 
 // Create the express application
-   app = module.exports = express.createServer(),
-
-   DNode = require('dnode'),
-   BackboneDNode = require('backbone-dnode');
+   app = module.exports = express.createServer();
 
 
 // Load Application Configuration
@@ -91,14 +88,12 @@ function errorHandler(client, conn) {
     });
 }
 
-// Attatch the DNode middleware and connect
-DNode()
-    .use(errorHandler)
-    .use(BackboneDNode.pubsub({
-      publish: pub,
-      subscribe: sub
-    }))
-    .use(BackboneDNode.crud({
-      database: database
-    }))
-    .listen(app);
+// Web Socket Handler
+// ------------------
+
+var io = require('socket.io').listen(app);
+
+io.sockets.on('connection', function(client) {
+    client.send('Websocket connection initiated.');
+    
+});
